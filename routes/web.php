@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Module;
 use App\Models\User;
@@ -84,6 +85,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/modules/delete/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');
         Route::get('/modules/edit/{module}', [ModuleController::class, 'edit'])->name('modules.edit');
         Route::put('/modules/update/{module}', [ModuleController::class, 'update'])->name('modules.update');
+
+        Route::get('/password/update', [PasswordController::class, 'edit'])->name('password.edit');
+        Route::put('/password/update', [PasswordController::class, 'update'])->name('password.update');
 
         Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
 

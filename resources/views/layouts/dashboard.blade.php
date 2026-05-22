@@ -25,10 +25,10 @@
             </a>
 
             <!-- Menu Khusus Admin -->
-            @if (Auth::user()->role === 'admin')
-                <div class="mt-6">
-                    <p class="px-2 text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 mt-4">Administrator
-                    </p>
+            <div class="mt-6">
+                <p class="px-2 text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2 mt-4">Administrator
+                </p>
+                @if (Auth::user()->role === 'admin')
                     <a href="{{ route('admin.users') }}"
                         class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('admin.users') ? 'bg-[#5a0000]' : '' }}">
                         Manajemen Dosen
@@ -37,8 +37,12 @@
                         class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('admin.content.edit') ? 'bg-[#5a0000]' : '' }}">
                         Pengaturan Web
                     </a>
-                </div>
-            @endif
+                @endif
+                <a href="{{ route('password.edit') }}"
+                    class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('password.edit') ? 'bg-[#5a0000]' : '' }}">
+                    Ganti Password
+                </a>
+            </div>
         </nav>
 
         <div class="p-4 border-t border-[#5a0000]">
