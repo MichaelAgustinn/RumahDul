@@ -121,6 +121,17 @@
                     </ul>
                 </div>
             @endif
+            @if (session('success'))
+                <div
+                    class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 mb-6 shadow-sm flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <p class="text-sm font-medium">
+                        {{ session('success') }}
+                    </p>
+                </div>
+            @endif
 
             @yield('content')
         </main>
