@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
         // Manajemen Dosen
         Route::get('/users', [AdminController::class, 'indexUsers'])->name('users');
         Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+        Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
         Route::patch('users/{user}/reset-password', [AdminController::class, 'resetPassword'])->name('users.reset-password');
         Route::patch('users/{user}/update-role', [AdminController::class, 'updateRole'])->name('users.update-role');

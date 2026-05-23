@@ -75,7 +75,7 @@
                     <!-- Canvas tempat PDF digambar -->
                     <canvas
                         class="pdf-canvas w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-in-out hidden"
-                        data-pdf-url="{{ Storage::url($modul->file_path) }}"></canvas>
+                        data-pdf-url="{{ asset($modul->file_path) }}"></canvas>
 
                     <!-- Loading Indicator -->
                     <div

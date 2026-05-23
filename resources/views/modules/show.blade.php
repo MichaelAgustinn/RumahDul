@@ -56,7 +56,7 @@
     <!-- Area PDF Menggunakan Iframe -->
     <div class="flex-grow relative w-full h-full bg-gray-800">
         <!-- Trik: Menambahkan #toolbar=0 di akhir URL akan memaksa browser menyembunyikan tombol download bawaannya -->
-        <iframe src="{{ Storage::url($module->file_path) }}#toolbar=0&navpanes=0&scrollbar=1"
+        <iframe src="{{ asset($module->file_path) }}#toolbar=0&navpanes=0&scrollbar=1"
             class="absolute inset-0 w-full h-full border-none" title="PDF Viewer">
         </iframe>
     </div>

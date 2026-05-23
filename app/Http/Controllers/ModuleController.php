@@ -6,8 +6,8 @@ use App\Models\Module;
 use App\Models\ModulLog;
 use App\Models\WebContent;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File; // Tambahkan ini untuk mengelola file di public
 use Illuminate\Support\Str;
 
 class ModuleController extends Controller
@@ -51,15 +51,18 @@ class ModuleController extends Controller
 
         $request->validate($rules);
 
-        // 3. Proses Penamaan & Upload File
+        // 3. Proses Penamaan & Upload File ke folder Public
         $file = $request->file('file_pdf');
         $safeFileName = Str::slug($request->jenis . '-' . $request->mata_kuliah);
-
         $fileName = $safeFileName . '-' . time() . '.pdf';
-        $pdfPath = $file->storeAs('modul_pdfs', $fileName, 'public');
 
-        // 4. Penentuan Pemilik Modul (Kunci Fiturnya di sini)
-        // Jika admin, gunakan user_id dari dropdown. Jika dosen, gunakan ID dia sendiri.
+        // Pindahkan file langsung ke folder public/uploads/modul_pdfs
+        $file->move(public_path('uploads/modul_pdfs'), $fileName);
+
+        // Simpan path relatifnya untuk database
+        $pdfPath = 'uploads/modul_pdfs/' . $fileName;
+
+        // 4. Penentuan Pemilik Modul
         $pemilikId = Auth::user()->role === 'admin' ? $request->user_id : Auth::id();
 
         // 5. Simpan ke Database
@@ -98,7 +101,7 @@ class ModuleController extends Controller
             'judul' => 'required|string|max:255',
             'mata_kuliah' => 'required|string|max:255',
             'jenis' => 'required|in:modul praktikum,modul ajar',
-            'file_pdf' => 'nullable|mimes:pdf|max:15360', // Nullable: Boleh kosong jika tidak ganti PDF
+            'file_pdf' => 'nullable|mimes:pdf|max:15360',
         ];
 
         if (Auth::user()->role === 'admin') {
@@ -116,16 +119,23 @@ class ModuleController extends Controller
             $module->user_id = $request->user_id;
         }
 
-        // Jika user mengupload PDF baru, hapus yang lama dan simpan yang baru
+        // Jika user mengupload PDF baru, hapus yang lama di public dan simpan yang baru
         if ($request->hasFile('file_pdf')) {
-            Storage::disk('public')->delete($module->file_path); // Hapus PDF lama
+            // Hapus PDF lama secara fisik
+            if (File::exists(public_path($module->file_path))) {
+                File::delete(public_path($module->file_path));
+            }
 
+            // Upload PDF baru
             $file = $request->file('file_pdf');
             $safeFileName = Str::slug($request->jenis . '-' . $request->mata_kuliah);
             $fileName = $safeFileName . '-' . time() . '.pdf';
 
-            $pdfPath = $file->storeAs('modul_pdfs', $fileName, 'public');
-            $module->file_path = $pdfPath;
+            // Pindahkan file ke folder public/uploads/modul_pdfs
+            $file->move(public_path('uploads/modul_pdfs'), $fileName);
+
+            // Perbarui path di database
+            $module->file_path = 'uploads/modul_pdfs/' . $fileName;
         }
 
         $module->save();
@@ -139,7 +149,12 @@ class ModuleController extends Controller
             abort(403, 'Anda tidak memiliki akses untuk menghapus modul ini.');
         }
 
-        Storage::disk('public')->delete($module->file_path);
+        // Hapus file fisik dari folder public
+        if (File::exists(public_path($module->file_path))) {
+            File::delete(public_path($module->file_path));
+        }
+
+        // Hapus data dari database
         $module->delete();
 
         return redirect()->back()->with('success', 'Modul berhasil dihapus.');
@@ -162,6 +177,8 @@ class ModuleController extends Controller
             'modul_id' => $module->id,
             'type' => 'download'
         ]);
-        return response()->download(storage_path('app/public/' . $module->file_path), $module->judul . '.pdf');
+
+        // Arahkan proses download langsung ke folder public
+        return response()->download(public_path($module->file_path), $module->judul . '.pdf');
     }
 }

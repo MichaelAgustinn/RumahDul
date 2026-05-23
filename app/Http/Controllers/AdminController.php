@@ -11,24 +11,48 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
     // --- MANAJEMEN DOSEN --- //
-    public function indexUsers()
+    // 1. Update fungsi Index (Hapus pencarian email)
+    public function indexUsers(Request $request)
     {
-        $users = User::latest()->paginate(10);
+        $query = User::latest();
+
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('nidn', 'like', '%' . $search . '%');
+            });
+        }
+
+        $users = $query->paginate(10);
         return view('admin.users.index', compact('users'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $request->validate([
+            'nidn' => 'required|string|max:20|unique:users,nidn,' . $user->id,
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'nidn' => $request->nidn,
+            'name' => $request->name,
+        ]);
+
+        return redirect()->back()->with('success', 'Data pengguna berhasil diperbarui!');
     }
 
     public function storeUser(Request $request)
     {
         $request->validate([
-            'nidn' => 'required|string|max:20|unique:users', // Validasi NIDN
+            'nidn' => 'required|string|max:20|unique:users',
             'name' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
         ]);
 
         User::create([
             'nidn' => $request->nidn,
             'name' => $request->name,
-            'email' => $request->email,
             'password' => Hash::make($request->nidn),
             'role' => 'dosen',
         ]);

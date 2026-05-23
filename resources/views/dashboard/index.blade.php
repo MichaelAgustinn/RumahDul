@@ -239,7 +239,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end space-x-2">
                                             <!-- Tombol Lihat -->
-                                            <a href="{{ Storage::url($modul->file_path) }}" target="_blank"
+                                            <a href="{{ asset($modul->file_path) }}" target="_blank"
                                                 class="text-blue-600 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 p-2 rounded-lg transition-colors"
                                                 title="Lihat PDF">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
