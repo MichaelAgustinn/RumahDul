@@ -190,15 +190,6 @@
                                     Dashboard Pengguna
                                 </a>
                             </li>
-                        @else
-                            <li>
-                                <a href="{{ route('login') }}"
-                                    class="group flex items-center text-gray-300 hover:text-white transition-colors duration-300 w-max">
-                                    <span
-                                        class="w-0 h-[2px] bg-white mr-0 group-hover:w-3 group-hover:mr-2 transition-all duration-300"></span>
-                                    Login Dosen / Admin
-                                </a>
-                            </li>
                         @endauth
                     </ul>
                 </div>
@@ -266,7 +257,7 @@
 
                 <div class="flex items-center space-x-6">
                     <p class="text-xs text-gray-500 font-bold tracking-wide">
-                        &copy; {{ date('Y') }} ISC UNSULBAR. All rights reserved.
+                        &copy; {{ date('Y') }} Keperawatan UNSULBAR. All rights reserved.
                     </p>
 
                     <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
