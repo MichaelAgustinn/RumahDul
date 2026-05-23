@@ -8,10 +8,8 @@
         /* Kustomisasi agar serasi dengan Tailwind Tema Maroon */
         .choices[data-type*=select-one] .choices__inner {
             border-radius: 0.75rem !important;
-            /* rounded-xl */
             border: 1px solid #d1d5db !important;
             background-color: #fef2f2 !important;
-            /* bg-red-50 */
             padding: 0.4rem 1rem !important;
             font-weight: 500 !important;
             color: #6a0000 !important;
@@ -43,6 +41,7 @@
             color: #6a0000 !important;
         }
     </style>
+
     <div class="space-y-8">
 
         <!-- FORM UPLOAD SECTION -->
@@ -95,7 +94,9 @@
                             <div>
                                 <label class="block text-sm font-bold text-gray-700 mb-1.5">Dosen Pemilik (Author)</label>
                                 <select name="user_id" id="dosen_select" required>
-                                    <option value="{{ Auth::id() }}">-- Saya Sendiri (Admin) --</option>
+                                    <!-- Menampilkan Nama Admin Secara Eksplisit -->
+                                    <option value="{{ Auth::id() }}">-- {{ Auth::user()->name }} (Saya Sendiri) --
+                                    </option>
                                     @foreach ($dosens as $dosen)
                                         <option value="{{ $dosen->id }}"
                                             {{ old('user_id') == $dosen->id ? 'selected' : '' }}>
@@ -157,7 +158,7 @@
                 </div>
             </div>
 
-            <!-- Container Tabel (Untuk di-replace oleh JavaScript) -->
+            <!-- Container Tabel -->
             <div id="table-container" class="transition-opacity duration-300">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -173,7 +174,7 @@
                                 @if (Auth::user()->role === 'admin')
                                     <th scope="col"
                                         class="px-6 py-4 text-left text-xs font-extrabold text-gray-500 uppercase tracking-wider">
-                                        Pemilik (Dosen)</th>
+                                        Pemilik (Author)</th>
                                 @endif
 
                                 <th scope="col"
@@ -214,9 +215,19 @@
 
                                     @if (Auth::user()->role === 'admin')
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-semibold text-gray-900">{{ $modul->user->name }}
+                                            <!-- Penanda Badge Khusus Anda / Admin -->
+                                            <div class="text-sm font-semibold text-gray-900 flex items-center">
+                                                {{ $modul->user->name }}
+
+                                                @if ($modul->user->id === Auth::id())
+                                                    <span
+                                                        class="ml-2 px-2 py-0.5 rounded-md bg-green-100 text-green-700 text-[10px] font-bold">Anda</span>
+                                                @elseif ($modul->user->role === 'admin')
+                                                    <span
+                                                        class="ml-2 px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-[10px] font-bold">Admin</span>
+                                                @endif
                                             </div>
-                                            <div class="text-xs text-gray-400">{{ $modul->user->email }}</div>
+                                            <div class="text-xs text-gray-400 mt-0.5">{{ $modul->user->email }}</div>
                                         </td>
                                     @endif
 
@@ -241,7 +252,7 @@
                                                 </svg>
                                             </a>
 
-                                            <!-- Tombol Edit Baru -->
+                                            <!-- Tombol Edit -->
                                             <a href="{{ route('admin.modules.edit', $modul->id) }}"
                                                 class="text-amber-600 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 p-2 rounded-lg transition-colors"
                                                 title="Edit Modul">
@@ -309,21 +320,15 @@
 
             // Fungsi untuk Fetch Data Tabel
             const fetchTableData = (url) => {
-                // Efek loading transparan
                 tableContainer.style.opacity = '0.5';
 
                 fetch(url)
                     .then(response => response.text())
                     .then(html => {
-                        // Parsing HTML yang dikembalikan server
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
-
-                        // Ganti isi tabel lama dengan tabel baru hasil query
                         const newContent = doc.getElementById('table-container').innerHTML;
                         tableContainer.innerHTML = newContent;
-
-                        // Kembalikan opacity
                         tableContainer.style.opacity = '1';
                     })
                     .catch(error => {
@@ -332,12 +337,9 @@
                     });
             };
 
-            // Event Listener Ngetik di Search Box (Live Search)
+            // Live Search
             searchInput.addEventListener('input', function() {
-                // Hapus timer sebelumnya jika masih ngetik (Debounce)
                 clearTimeout(debounceTimer);
-
-                // Eksekusi request 500ms setelah user berhenti ngetik
                 debounceTimer = setTimeout(() => {
                     const query = searchInput.value;
                     const url = new URL(window.location.href);
@@ -347,23 +349,15 @@
                     } else {
                         url.searchParams.delete('search');
                     }
-
-                    // Hapus parameter page agar kembali ke halaman 1 saat mulai mencari
                     url.searchParams.delete('page');
-
-                    // Perbarui URL browser tanpa reload
                     window.history.pushState({}, '', url);
-
-                    // Panggil data
                     fetchTableData(url);
                 }, 500);
             });
 
-            // Event Listener Klik Tombol Paginasi Tanpa Reload
+            // Paginasi Tanpa Reload
             tableContainer.addEventListener('click', function(e) {
-                const link = e.target.closest('a'); // Cari elemen <a> (link paginasi)
-
-                // Jika yang diklik adalah tombol paginate dan bukan tombol Hapus/View PDF
+                const link = e.target.closest('a');
                 if (link && link.href && !link.closest('form') && !link.target && !link.href.includes(
                         '/edit')) {
                     e.preventDefault();
@@ -377,16 +371,15 @@
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Cek apakah elemen select dosen ada (hanya dirender jika login sebagai admin)
             const dosenSelect = document.getElementById('dosen_select');
 
             if (dosenSelect) {
                 new Choices(dosenSelect, {
-                    searchEnabled: true, // Aktifkan kolom pencarian
-                    searchPlaceholderValue: 'Ketik nama atau NIDN dosen...', // Teks bayangan di kolom cari
-                    itemSelectText: '', // Hilangkan teks default "Press to select"
-                    shouldSort: false, // Pertahankan urutan abjad dari database
-                    noResultsText: 'Dosen tidak ditemukan' // Pesan jika tidak ada hasil
+                    searchEnabled: true,
+                    searchPlaceholderValue: 'Ketik nama atau NIDN dosen...',
+                    itemSelectText: '',
+                    shouldSort: false,
+                    noResultsText: 'Dosen tidak ditemukan'
                 });
             }
         });

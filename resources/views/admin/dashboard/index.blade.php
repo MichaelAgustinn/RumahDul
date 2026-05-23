@@ -12,10 +12,11 @@
                 <p class="text-sm text-gray-500">Pantau pergerakan pengunjung dan interaksi modul</p>
             </div>
             <div>
-                <select class="rounded-md border-gray-300 shadow-sm focus:border-[#800000] focus:ring-[#800000] text-sm">
-                    <option>7 Hari Terakhir</option>
-                    <option>Bulan Ini</option>
-                    <option>Tahun Ini</option>
+                <select onchange="window.location.href='?period=' + this.value"
+                    class="rounded-md border-gray-300 shadow-sm focus:border-[#800000] focus:ring-[#800000] text-sm cursor-pointer">
+                    <option value="7_days" {{ request('period') == '7_days' ? 'selected' : '' }}>7 Hari Terakhir</option>
+                    <option value="this_month" {{ request('period') == 'this_month' ? 'selected' : '' }}>Bulan Ini</option>
+                    <option value="this_year" {{ request('period') == 'this_year' ? 'selected' : '' }}>Tahun Ini</option>
                 </select>
             </div>
         </div>
