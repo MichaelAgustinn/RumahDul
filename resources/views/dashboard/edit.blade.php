@@ -55,7 +55,7 @@
                     </svg>
                     Perbarui Informasi Modul
                 </h2>
-                <a href="{{ route('admin.dashboard') }}"
+                <a href="{{ redirect()->back() }}"
                     class="text-xs font-bold text-gray-300 hover:text-white bg-white/10 px-3 py-1.5 rounded-lg transition-colors">
                     Kembali
                 </a>
