@@ -29,11 +29,41 @@ class AdminController extends Controller
             'nidn' => $request->nidn,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->nidn),
             'role' => 'dosen',
         ]);
 
         return redirect()->back()->with('success', 'Akun dosen berhasil ditambahkan!');
+    }
+
+    public function resetPassword(User $user)
+    {
+        if (!$user->nidn) {
+            return redirect()->back()->withErrors('Gagal reset: Akun ini tidak memiliki NIDN yang terdaftar.');
+        }
+
+        $user->update([
+            'password' => Hash::make($user->nidn)
+        ]);
+
+        return redirect()->back()->with('success', "Password untuk {$user->name} berhasil direset kembali ke NIDN.");
+    }
+
+    public function updateRole(Request $request, User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return redirect()->back()->withErrors('Anda tidak bisa mengubah role Anda sendiri.');
+        }
+
+        $request->validate([
+            'role' => 'required|in:admin,dosen',
+        ]);
+
+        $user->update([
+            'role' => $request->role
+        ]);
+
+        return redirect()->back()->with('success', "Hak akses {$user->name} berhasil diubah menjadi " . strtoupper($request->role) . ".");
     }
 
     public function destroyUser(User $user)

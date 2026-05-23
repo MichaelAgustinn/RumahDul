@@ -25,8 +25,8 @@ Route::get('/modul/{module}/unduh', [ModuleController::class, 'downloadPdf'])->n
 |--------------------------------------------------------------------------
 */
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/login-dosen', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login-dosen', [AuthController::class, 'login']);
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/modules/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');
 
     // Grouping khusus Admin Controller
-    Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         // Dashboard Utama
         Route::get('/dashboard', function () {
             $modules = auth()->user()->role === 'admin'
@@ -89,16 +89,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/password/update', [PasswordController::class, 'edit'])->name('password.edit');
         Route::put('/password/update', [PasswordController::class, 'update'])->name('password.update');
 
-        Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
+        // Route::middleware([IsAdmin::class])->prefix('admin')->name('admin.')->group(function () {
 
-            // Manajemen Dosen
-            Route::get('/users', [AdminController::class, 'indexUsers'])->name('users');
-            Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
-            Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        // Manajemen Dosen
+        Route::get('/users', [AdminController::class, 'indexUsers'])->name('users');
+        Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+        Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+        Route::patch('users/{user}/reset-password', [AdminController::class, 'resetPassword'])->name('users.reset-password');
+        Route::patch('users/{user}/update-role', [AdminController::class, 'updateRole'])->name('users.update-role');
 
-            // Pengaturan Konten Website
-            Route::get('/web-content', [AdminController::class, 'editContent'])->name('content.edit');
-            Route::put('/web-content', [AdminController::class, 'updateContent'])->name('content.update');
-        });
+        // Pengaturan Konten Website
+        Route::get('/web-content', [AdminController::class, 'editContent'])->name('content.edit');
+        Route::put('/web-content', [AdminController::class, 'updateContent'])->name('content.update');
+        // });
     });
 });

@@ -58,7 +58,8 @@
             </div>
 
             <div class="p-6">
-                <form action="{{ route('modules.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                <form action="{{ route('admin.modules.store') }}" method="POST" enctype="multipart/form-data"
+                    class="space-y-5">
                     @csrf
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -241,7 +242,7 @@
                                             </a>
 
                                             <!-- Tombol Edit Baru -->
-                                            <a href="{{ route('modules.edit', $modul->id) }}"
+                                            <a href="{{ route('admin.modules.edit', $modul->id) }}"
                                                 class="text-amber-600 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 p-2 rounded-lg transition-colors"
                                                 title="Edit Modul">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
@@ -253,7 +254,7 @@
                                             </a>
 
                                             <!-- Tombol Hapus -->
-                                            <form action="{{ route('modules.destroy', $modul) }}" method="POST"
+                                            <form action="{{ route('admin.modules.destroy', $modul) }}" method="POST"
                                                 onsubmit="return confirm('Hapus modul ini secara permanen?')">
                                                 @csrf
                                                 @method('DELETE')

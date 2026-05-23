@@ -38,8 +38,8 @@
                         Pengaturan Web
                     </a>
                 @endif
-                <a href="{{ route('password.edit') }}"
-                    class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('password.edit') ? 'bg-[#5a0000]' : '' }}">
+                <a href="{{ route('admin.password.edit') }}"
+                    class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('admin.password.edit') ? 'bg-[#5a0000]' : '' }}">
                     Ganti Password
                 </a>
             </div>

@@ -126,16 +126,6 @@
                                 Buka Dashboard
                             </button>
                         </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="group flex items-center space-x-2 text-sm font-bold text-gray-200 hover:text-white bg-white/5 hover:bg-white/10 px-5 py-2.5 rounded-xl border border-white/10 hover:border-white/30 transition-all duration-300 active:scale-95 shadow-sm">
-                            <span>Login Dosen</span>
-                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                            </svg>
-                        </a>
                     @endauth
                 </div>
             </div>

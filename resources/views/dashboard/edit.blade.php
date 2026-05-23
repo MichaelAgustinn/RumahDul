@@ -55,14 +55,14 @@
                     </svg>
                     Perbarui Informasi Modul
                 </h2>
-                <a href="{{ route('dashboard') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="text-xs font-bold text-gray-300 hover:text-white bg-white/10 px-3 py-1.5 rounded-lg transition-colors">
                     Kembali
                 </a>
             </div>
 
             <div class="p-6 sm:p-8">
-                <form action="{{ route('modules.update', $module->id) }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('admin.modules.update', $module->id) }}" method="POST" enctype="multipart/form-data"
                     class="space-y-6">
                     @csrf
                     @method('PUT') <!-- Wajib untuk metode Edit di Laravel -->
