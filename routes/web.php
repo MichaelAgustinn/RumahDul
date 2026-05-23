@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Module;
@@ -80,6 +81,8 @@ Route::middleware('auth')->group(function () {
 
             return view('dashboard.index', compact('modules'));
         })->name('dashboard');
+
+        Route::get('/statistic', [DashboardController::class, 'index'])->name('statistic.dashboard');
 
         Route::post('/modules', [ModuleController::class, 'store'])->name('modules.store');
         Route::delete('/modules/delete/{module}', [ModuleController::class, 'destroy'])->name('modules.destroy');

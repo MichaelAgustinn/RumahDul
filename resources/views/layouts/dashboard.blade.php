@@ -18,6 +18,12 @@
 
         <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
             <p class="px-2 text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Menu Utama</p>
+            @if (Auth::user()->role === 'admin')
+                <a href="{{ route('admin.statistic.dashboard') }}"
+                    class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('admin.statistic.dashboard') ? 'bg-[#5a0000]' : '' }}">
+                    Dashboard
+                </a>
+            @endif
 
             <a href="{{ route('dashboard') }}"
                 class="block px-4 py-2 rounded-md hover:bg-[#5a0000] transition {{ request()->routeIs('dashboard') ? 'bg-[#5a0000]' : '' }}">

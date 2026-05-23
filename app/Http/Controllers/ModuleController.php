@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Module;
+use App\Models\ModulLog;
 use App\Models\WebContent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -147,13 +148,20 @@ class ModuleController extends Controller
     public function viewPdf(Module $module)
     {
         $module->increment('views_count');
+        ModulLog::create([
+            'modul_id' => $module->id,
+            'type' => 'view'
+        ]);
         return view('modules.show', compact('module'));
     }
 
     public function downloadPdf(Module $module)
     {
         $module->increment('downloads_count');
-
+        ModulLog::create([
+            'modul_id' => $module->id,
+            'type' => 'download'
+        ]);
         return response()->download(storage_path('app/public/' . $module->file_path), $module->judul . '.pdf');
     }
 }
